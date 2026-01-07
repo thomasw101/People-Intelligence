@@ -1,13 +1,3 @@
-import React, { useState } from 'react';
-
-/** * 1. YOUR INTELLIGENCE TOOL 
- * -------------------------------------------------------------------
- * Paste your entire existing 556-line component logic inside this function.
- * This is now a "Child Component" that only renders after successful login.
- */
-const IntelligenceTool = () => {
-  // --- PASTE YOUR 556 LINES OF CODE STARTING HERE ---
-  // (Include all your search logic, data mappings, and UI returns)
 import React, { useState, useEffect } from 'react';
 import { Search, Building2, Linkedin, Globe, ChevronDown, ChevronUp, Loader2, Target, Lightbulb, MessageCircle, Users, Briefcase, Download, Save, Settings, Zap, BookOpen, X, Plus, Trash2 } from 'lucide-react';
 
@@ -20,6 +10,12 @@ const contextOptions = [
 ];
 
 const PeopleIntelligence = () => {
+  // Auth state
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [username, setUsername] = useState('');
+  const [accessCode, setAccessCode] = useState('');
+  const [loginError, setLoginError] = useState('');
+
   const [context, setContext] = useState('general');
   const [depth, setDepth] = useState('full');
   const [showAdvanced, setShowAdvanced] = useState(false);
@@ -41,9 +37,29 @@ const PeopleIntelligence = () => {
   });
 
   useEffect(() => {
+    // Check if already logged in
+    const auth = localStorage.getItem('proptechAuth');
+    if (auth === 'true') setIsAuthenticated(true);
+    
     const saved = localStorage.getItem('proptechSavedPeople');
     if (saved) setSavedPeople(JSON.parse(saved));
   }, []);
+
+  const handleLogin = (e) => {
+    e.preventDefault();
+    if (username.toLowerCase() === 'user' && accessCode === 'PTC2026') {
+      setIsAuthenticated(true);
+      localStorage.setItem('proptechAuth', 'true');
+      setLoginError('');
+    } else {
+      setLoginError('Invalid username or access code');
+    }
+  };
+
+  const handleLogout = () => {
+    setIsAuthenticated(false);
+    localStorage.removeItem('proptechAuth');
+  };
 
   const isFormValid = formData.name && formData.company && formData.linkedin && formData.website;
 
@@ -201,6 +217,85 @@ Return ONLY valid JSON, no markdown.`;
       </div>
     );
   };
+
+  // Login Screen
+  if (!isAuthenticated) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 relative">
+        {/* Blurred background content preview */}
+        <div className="absolute inset-0 overflow-hidden">
+          <div className="max-w-4xl mx-auto px-4 py-8 filter blur-sm opacity-30">
+            <div className="text-center mb-8">
+              <div className="flex items-center justify-center gap-2 mb-3">
+                <span className="text-2xl font-bold text-white tracking-wide">PROPTECH</span>
+                <span className="text-2xl font-bold text-cyan-400 tracking-wide">CONNECT</span>
+              </div>
+              <h1 className="text-3xl font-bold text-white mb-2">People Intelligence</h1>
+            </div>
+            <div className="bg-slate-800/30 rounded-2xl p-6 border border-slate-700/50">
+              <div className="h-12 bg-slate-700/50 rounded-lg mb-4"></div>
+              <div className="h-12 bg-slate-700/50 rounded-lg mb-4"></div>
+              <div className="h-12 bg-slate-700/50 rounded-lg"></div>
+            </div>
+          </div>
+        </div>
+
+        {/* Login Modal */}
+        <div className="relative z-10 min-h-screen flex items-center justify-center px-4">
+          <div className="bg-slate-800/90 backdrop-blur-xl rounded-2xl p-8 border border-slate-700 w-full max-w-md shadow-2xl">
+            <div className="text-center mb-6">
+              <div className="flex items-center justify-center gap-2 mb-3">
+                <span className="text-xl font-bold text-white tracking-wide">PROPTECH</span>
+                <span className="text-xl font-bold text-cyan-400 tracking-wide">CONNECT</span>
+              </div>
+              <h2 className="text-2xl font-bold text-white mb-1">People Intelligence</h2>
+              <p className="text-slate-400 text-sm">Enter your credentials to access</p>
+            </div>
+
+            <form onSubmit={handleLogin} className="space-y-4">
+              <div>
+                <label className="text-slate-400 text-xs mb-1 block">Username</label>
+                <input
+                  type="text"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  placeholder="Enter username"
+                  className="w-full px-4 py-3 bg-slate-900/50 border border-slate-600 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-cyan-500/50 focus:border-cyan-500"
+                />
+              </div>
+              <div>
+                <label className="text-slate-400 text-xs mb-1 block">Access Code</label>
+                <input
+                  type="password"
+                  value={accessCode}
+                  onChange={(e) => setAccessCode(e.target.value)}
+                  placeholder="Enter access code"
+                  className="w-full px-4 py-3 bg-slate-900/50 border border-slate-600 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-cyan-500/50 focus:border-cyan-500"
+                />
+              </div>
+
+              {loginError && (
+                <p className="text-red-400 text-sm text-center">{loginError}</p>
+              )}
+
+              <button
+                type="submit"
+                className="w-full py-3 bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600 text-white font-semibold rounded-xl transition-all shadow-lg shadow-cyan-500/20"
+              >
+                Access Tool
+              </button>
+            </form>
+
+            <div className="text-center mt-6 pt-4 border-t border-slate-700">
+              <p className="text-slate-500 text-xs">
+                Powered by <span className="text-slate-400">LearnLab Media Limited</span>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950">
@@ -564,98 +659,3 @@ export default PeopleIntelligence;
 
 // Also export as App for compatibility
 export { PeopleIntelligence as App };
-  
-  return (
-    <div className="p-10 max-w-7xl mx-auto text-white">
-      {/* This represents your original 556-line UI */}
-      <h1 className="text-4xl font-bold">Platform Active</h1>
-      <p className="text-slate-400 mt-2 italic">Search functionality and data grid fully loaded.</p>
-    </div>
-  );
-};
-
-/** * 2. THE MAIN WRAPPER (GATEKEEPER)
- * -------------------------------------------------------------------
- * This is what Vercel sees first. It manages the login state and the blur.
- */
-export default function App() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [username, setUsername] = useState('');
-  const [accessCode, setAccessCode] = useState('');
-  const [error, setError] = useState('');
-
-  const handleLogin = (e) => {
-    e.preventDefault();
-    // THE SPECIFIC CREDENTIALS FOR YOUR PITCH
-    if (username.toLowerCase() === "admin" && accessCode === "PTC2026") {
-      setIsAuthenticated(true);
-      setError('');
-    } else {
-      setError('Access Denied: Restricted to PropTech Connect Personnel.');
-    }
-  };
-
-  return (
-    <div className="relative min-h-screen bg-slate-900 overflow-x-hidden">
-      
-      {/* Background Content: Blurs until isAuthenticated is true */}
-      <div className={`${isAuthenticated ? "opacity-100" : "blur-2xl grayscale pointer-events-none select-none"} transition-all duration-1000 ease-in-out`}>
-        <IntelligenceTool />
-      </div>
-
-      {/* The Login Portal Overlay */}
-      {!isAuthenticated && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-md p-6">
-          <div className="w-full max-w-md p-10 bg-white rounded-[2rem] shadow-2xl border border-slate-200 transform transition-all">
-            <div className="text-center mb-10">
-              <div className="inline-block p-4 rounded-2xl bg-blue-600/10 mb-4 border border-blue-600/20">
-                <svg className="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                </svg>
-              </div>
-              <h2 className="text-3xl font-extrabold text-slate-900 tracking-tight">Staff Portal</h2>
-              <p className="text-slate-500 mt-2 font-medium uppercase text-[10px] tracking-[0.2em]">Regional Intelligence Platform</p>
-            </div>
-            
-            <form onSubmit={handleLogin} className="space-y-6">
-              <div className="space-y-1">
-                <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Username</label>
-                <input 
-                  type="text" 
-                  autoFocus
-                  className="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none text-slate-900 transition-all font-medium" 
-                  placeholder="e.g. Admin"
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
-                />
-              </div>
-              <div className="space-y-1">
-                <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Access Code</label>
-                <input 
-                  type="password" 
-                  className="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none text-slate-900 transition-all font-medium" 
-                  placeholder="••••••••"
-                  value={accessCode}
-                  onChange={(e) => setAccessCode(e.target.value)}
-                />
-              </div>
-              
-              {error && <p className="text-red-500 text-xs font-bold text-center bg-red-50 py-2 rounded-lg">{error}</p>}
-              
-              <button 
-                type="submit" 
-                className="w-full py-5 bg-slate-900 hover:bg-blue-600 text-white font-bold rounded-2xl transition-all shadow-xl shadow-slate-200 active:scale-[0.97]"
-              >
-                Access Platform
-              </button>
-            </form>
-            <div className="mt-10 pt-8 border-t border-slate-100 flex justify-between items-center text-[9px] text-slate-400 font-bold uppercase tracking-widest">
-              <span>Dubai 2026 Initiative</span>
-              <span>Encrypted Access</span>
-            </div>
-          </div>
-        </div>
-      )}
-    </div>
-  );
-}
