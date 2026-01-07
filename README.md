@@ -1,3 +1,4 @@
+[README.md](https://github.com/user-attachments/files/24469870/README.md)
 # People Intelligence - PropTech Connect
 
 AI-powered research tool for understanding anyone before your next conversation.
