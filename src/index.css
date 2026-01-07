@@ -220,6 +220,12 @@ body {
 .opacity-\[0\.015\] { opacity: 0.015; }
 
 .backdrop-blur { backdrop-filter: blur(8px); }
+.backdrop-blur-xl { backdrop-filter: blur(24px); }
+
+.filter { }
+.blur-sm { filter: blur(4px); }
+
+.shadow-2xl { box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); }
 
 .pl-12 { padding-left: 3rem; }
 .pr-4 { padding-right: 1rem; }
